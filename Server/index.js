@@ -1,18 +1,17 @@
-const express=require('express');
-const bodyParser=require("body-parser");
-const { Server, Socket }=require("socket.io");
-const io=new Server();
-const app=express();
-app.use(bodyParser.json()); 
-const emailToSocketMapping=new Map();
-io.on("connection",(socket)=>{
-    socket.on("join-room",(data)=>{
-        const {roomId,emailId}=data;
-        console.log("User",emailId,"Joined Room",roomId)
-        emailToSocketMapping.set(emailId,socket.id)
-        socket.join(roomId);
-        socket.broadcast.to(roomId).emit("user-joined",{emailId})
-    })
+const { Server } = require("socket.io");
+const io = new Server(8000,{
+    cors:true
 });
-app.listen(8000,()=>console.log("Https server running at 8000"));
-io.listen(8001)
+const emailToSocketMap=new Map();
+const socketIdToEmail=new Map();
+io.on("connection", (socket) => {
+    socket.on("room:join",data=>{
+       const {email,room}=data;
+       emailToSocketMap.set(email,socket.id);
+       socketIdToEmail.set(socket.id,email)
+       io.to(socket.id).emit("room:join",data)
+
+    })
+  
+  console.log(`socket connected ${socket.id}`);
+});

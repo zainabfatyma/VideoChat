@@ -1,11 +1,16 @@
 import { useState } from "react";
-import Routing from "./Pages/Routing";
+import { Route, Routes } from "react-router-dom";
+import Lobby from "./Screens/lobby";
+
 
 function App() {
   const [count, setCount] = useState(0);
 
   return <>
-  <Routing/>
+<Routes>
+<Route path="/" element={<Lobby/>}/>
+</Routes>
+
   </>;
 }
 
