@@ -9,6 +9,8 @@ io.on("connection", (socket) => {
        const {email,room}=data;
        emailToSocketMap.set(email,socket.id);
        socketIdToEmail.set(socket.id,email)
+       io.to(room).emit("user:joined",{email,id:socket.id})
+       socket.join(room)
        io.to(socket.id).emit("room:join",data)
 
     })
